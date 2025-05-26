@@ -279,28 +279,59 @@
       }
     }
 
-    // Booking form handler (multiple shift slots)
-    document.getElementById("booking-form").onsubmit = function (e) {
-      e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
+  // Booking form handler (multiple shift slots)
+document.getElementById("booking-form").onsubmit = async function (e) {
+  e.preventDefault();
+  const form = e.target;
+  const formData = new FormData(form);
 
-      // Collect all shift slots
-      const bookInList = formData.getAll("bookIn");
-      const bookOutList = formData.getAll("bookOut");
-      const shiftSlots = bookInList.map((inVal, idx) => ({
-        bookIn: inVal,
-        bookOut: bookOutList[idx] || ""
-      }));
+  // Collect all shift slots
+  const bookInList = formData.getAll("bookIn");
+  const bookOutList = formData.getAll("bookOut");
+  const shiftSlots = bookInList.map((inVal, idx) => ({
+    bookIn: inVal,
+    bookOut: bookOutList[idx] || ""
+  }));
 
-      const booking = {
-        eventType: formData.get("eventType"),
-        obNumber: formData.get("obNumber"),
-        shiftDate: formData.get("shiftDate"),
-        shiftSlots: shiftSlots,
-        patrollers: formData.getAll("patrollers").join("; "),
-        timestamp: new Date().toISOString(),
-      };
+  // Collect all patrollers attended
+  const patrollers = formData.getAll("patrollers").join("; ");
+
+  // For each shift slot, send a request to PHP
+  let allOk = true, errors = [];
+  for (let idx = 0; idx < shiftSlots.length; idx++) {
+    const payload = new FormData();
+    payload.append("eventType", formData.get("eventType"));
+    payload.append("obNumber", formData.get("obNumber"));
+    payload.append("shiftDate", formData.get("shiftDate"));
+    payload.append("shiftNo", `Shift ${idx+1}`);
+    payload.append("bookIn", shiftSlots[idx].bookIn);
+    payload.append("bookOut", shiftSlots[idx].bookOut);
+    payload.append("patrollers", patrollers);
+
+    // POST to your PHP script
+    const resp = await fetch("https://yourdomain.com/save_shift_to_github.php", {
+      method: "POST",
+      body: payload
+    });
+    const text = await resp.text();
+    if (text.trim() !== "OK") {
+      allOk = false;
+      errors.push(`Shift ${idx+1}: ${text}`);
+    }
+  }
+
+  if (allOk) {
+    document.getElementById("booking-result").innerHTML =
+      '<span style="color:green;font-weight:bold;">Shift booking(s) saved successfully!</span>';
+    form.reset();
+    document.getElementById("shifts-container").innerHTML = "";
+    addShiftRow();
+    loadPatrollersTable();
+  } else {
+    document.getElementById("booking-result").innerHTML =
+      `<span style="color:red;font-weight:bold;">Error saving shift(s):<br>${errors.join("<br>")}</span>`;
+  }
+};
 
       // CSV: one row per shift slot for the same event/date
       const csvRows = booking.shiftSlots.map((slot, idx) =>
