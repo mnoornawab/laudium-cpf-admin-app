@@ -7,23 +7,11 @@
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <nav>
-    <a href="index.html">Dashboard</a> |
-    <a href="shiftbooking.html">Book a Shift</a>
-    <!-- Add more links as needed -->
-  </nav>
-  <h1>Laudium CPF Shift Dashboard</h1>
-  <section id="dashboard-section">
-    <button class="primary-btn" onclick="window.location.href='shiftbooking.html'">Book a Shift</button>
-    <button id="load-dashboard">Refresh Dashboard</button>
-    <div id="dashboard"></div>
+  <h1>Laudium CPF Dashboard</h1>
+  <section class="card" style="text-align:center;">
+    <h2 style="margin-top:0;">Shift Booking App</h2>
+    <p>Manage shifts and patrollers with ease.<br><br></p>
+    <button class="primary-btn" onclick="window.location.href='shiftbooking.html'">Go to Shift Booking</button>
   </section>
-  <script src="app.js"></script>
-  <script>
-    window.onload = () => {
-      loadDashboard();
-    }
-    document.getElementById("load-dashboard").onclick = loadDashboard;
-  </script>
 </body>
 </html>
