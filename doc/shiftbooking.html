@@ -148,7 +148,7 @@
         <input type="date" name="shiftDate" required style="width:100%;padding:0.5em;"/>
       </label>
       <div id="shifts-container"></div>
-      <button type="button" class="add-shift-btn" onclick="addShiftRow()">+ Add Another Shift Slot</button>
+      <button type="button" class="add-shift-btn" id="add-shift-btn">+ Add Another Shift Slot</button>
       <label class="form-label" style="margin-bottom:0.4em;">Patrollers Attended:</label>
       <div class="patrollers-table-container">
         <table class="patrollers-table" id="patrollers-table">
@@ -217,8 +217,17 @@
         }
       });
     }
+
     // Start with one shift slot by default
-    window.addEventListener("DOMContentLoaded", () => { addShiftRow(); loadPatrollersTable(); });
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("shifts-container").innerHTML = "";
+      shiftIndex = 0;
+      addShiftRow();
+      loadPatrollersTable();
+    });
+
+    // Attach add shift handler to button
+    document.getElementById('add-shift-btn').onclick = addShiftRow;
 
     function setNow(fieldId) {
       const now = new Date();
@@ -229,7 +238,8 @@
 
     // CSV parser
     function parseCSV(csv, delimiter = ",") {
-      const lines = csv.trim().split("\n");
+      const lines = csv.trim().split("\n").filter(line=>line);
+      if (lines.length < 2) return [];
       const headers = lines[0].split(delimiter).map(h => h.trim());
       return lines.slice(1).map(line => {
         const cols = line.split(delimiter).map(c => c.trim());
@@ -325,6 +335,7 @@
           '<span style="color:green;font-weight:bold;">Shift booking(s) saved successfully!</span>';
         form.reset();
         document.getElementById("shifts-container").innerHTML = "";
+        shiftIndex = 0;
         addShiftRow();
         loadPatrollersTable();
       } else {
@@ -332,42 +343,6 @@
           `<span style="color:red;font-weight:bold;">Error saving shift(s):<br>${errors.join("<br>")}</span>`;
       }
     };
-
-    // ---- CSV Download Block (Commented Out) ----
-    /*
-    // CSV: one row per shift slot for the same event/date
-    const csvRows = booking.shiftSlots.map((slot, idx) =>
-      [
-        booking.eventType,
-        booking.obNumber,
-        booking.shiftDate,
-        `Shift ${idx+1}`,
-        slot.bookIn,
-        slot.bookOut,
-        booking.patrollers,
-        booking.timestamp,
-      ].map(v => `"${(v || "").replace(/"/g, '""')}"`).join(",")
-    ).join("\n") + "\n";
-
-    // Download booking as CSV row(s)
-    const blob = new Blob([csvRows], { type: "text/csv" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "shift-booking-row.csv";
-    a.style.display = "none";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    document.getElementById("booking-result").innerHTML =
-      '<span style="color:green;font-weight:bold;">Booking row(s) generated! Please download and append these row(s) to <code>shifts.csv</code> in the repo.</span>';
-
-    form.reset();
-    // reset shift slot rows to 1
-    document.getElementById("shifts-container").innerHTML = "";
-    addShiftRow();
-    loadPatrollersTable();
-    */
   </script>
 </body>
 </html>
