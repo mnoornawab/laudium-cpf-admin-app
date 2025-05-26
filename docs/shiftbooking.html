@@ -10,7 +10,7 @@
     .shift-row {
       display: flex;
       align-items: center;
-      gap: 0.7em;
+      gap: 1em;
       margin-bottom: .7em;
       background: #f7fafc;
       border-radius: 7px;
@@ -19,42 +19,46 @@
     }
     .shift-label {
       font-weight: bold;
-      min-width: 60px;
-      margin-right: 0.6em;
+      min-width: 55px;
+      margin-right: 0.8em;
       text-align: right;
     }
     .shift-controls {
       display: flex;
       align-items: center;
-      gap: 0.6em;
+      gap: 1em;
       flex-wrap: wrap;
     }
     .shift-controls label {
       margin-bottom: 0;
-      margin-right: 0.2em;
+      margin-right: 0.3em;
       display: flex;
       align-items: center;
       font-weight: normal;
       gap: 0.25em;
     }
-    .shift-controls input[type="time"] { padding: 0.4em 0.2em; font-size:1em; }
-    .small-btn {
+    .shift-controls input[type="time"] {
+      padding: 0.35em 0.1em;
+      font-size:1em;
+      margin-right: 0.2em;
+    }
+    .tiny-btn {
       background: #1167b1;
       color: #fff;
       border: none;
-      border-radius: 4px;
-      padding: 0.18em 0.7em;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 0.97em;
-      transition: background 0.2s;
-      height: 2em;
-      margin-left: 0.1em;
+      border-radius: 50%;
+      font-size: 1em;
+      width: 1.9em;
+      height: 1.9em;
       display: flex;
       align-items: center;
-      gap: 0.15em;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-left: 0.1em;
+      padding: 0;
     }
-    .small-btn:hover { background: #144e75; }
+    .tiny-btn:hover { background: #144e75; }
     .remove-shift-btn {
       background: #f44336;
       color: #fff;
@@ -64,7 +68,7 @@
       cursor: pointer;
       font-size: 1em;
       padding: 0.18em 0.65em;
-      margin-left: 0.7em;
+      margin-left: 1em;
       transition: background 0.2s;
       height: 2em;
     }
@@ -119,6 +123,7 @@
       .shift-row { flex-direction: column; align-items: stretch;}
       .shift-label { min-width: 0; margin-right: 0; text-align: left;}
       .remove-shift-btn { margin-left:0;}
+      .shift-controls {flex-wrap: wrap;}
     }
   </style>
 </head>
@@ -183,12 +188,12 @@
           <label>
             Book In:
             <input type="time" name="bookIn" id="bookIn-${shiftIndex}" value="${bookInVal}" required />
-            <button type="button" class="small-btn" onclick="setNow('bookIn-${shiftIndex}')">&#128337; Now</button>
+            <button type="button" class="tiny-btn" aria-label="Set Now" onclick="setNow('bookIn-${shiftIndex}')">&#128337;</button>
           </label>
           <label>
             Book Out:
             <input type="time" name="bookOut" id="bookOut-${shiftIndex}" value="${bookOutVal}" required />
-            <button type="button" class="small-btn" onclick="setNow('bookOut-${shiftIndex}')">&#128337; Now</button>
+            <button type="button" class="tiny-btn" aria-label="Set Now" onclick="setNow('bookOut-${shiftIndex}')">&#128337;</button>
           </label>
         </div>
         ${shiftNum > 1 ? `<button type="button" class="remove-shift-btn" onclick="removeShiftRow('${row.id}')">✕</button>` : ''}
