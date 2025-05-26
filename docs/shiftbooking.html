@@ -9,7 +9,7 @@
 <body>
   <a href="index.html" style="display:block;text-align:center;margin-bottom:2em;">&larr; Back to Dashboard</a>
   <h1 style="text-align:center;">Book a Shift</h1>
-  <section class="card" style="max-width:500px;margin:auto;">
+  <section class="card" style="max-width:520px;margin:auto;">
     <form id="booking-form" autocomplete="off">
       <label>
         Event Type:<br>
@@ -29,14 +29,30 @@
         Shift Date:<br>
         <input type="date" name="shiftDate" required />
       </label><br><br>
+      <div style="display:flex;gap:1em;justify-content:space-between;align-items:flex-end;">
+        <div style="flex:1">
+          <label>
+            Book In:<br>
+            <input type="time" name="bookIn" id="bookIn" required />
+          </label>
+        </div>
+        <button type="button" onclick="setNow('bookIn')" style="height:2.4em;margin-bottom:0.25em;">&#128337; Now</button>
+        <div style="flex:1">
+          <label>
+            Book Out:<br>
+            <input type="time" name="bookOut" id="bookOut" required />
+          </label>
+        </div>
+        <button type="button" onclick="setNow('bookOut')" style="height:2.4em;margin-bottom:0.25em;">&#128337; Now</button>
+      </div>
+      <br>
       <label>
-        Shift Times (e.g. 08:00-10:00,12:00-14:00):<br>
-        <input name="shiftTimes" required />
-      </label><br><br>
-      <label>
-        Patrollers Assigned (comma separated):<br>
-        <input name="patrollers" placeholder="e.g. Shaheen Wahab, Zahid Zaman" required />
-      </label><br><br>
+        Patrollers Attended:<br>
+        <div id="patroller-checkboxes" style="background:#f4f6fa;border-radius:6px;padding:0.7em;max-height:180px;overflow-y:auto;border:1px solid #d7e1f3;margin-top:0.5em;">
+          Loading patroller list...
+        </div>
+      </label>
+      <br>
       <button type="submit" class="primary-btn">Book Shift</button>
     </form>
     <div id="booking-result" style="margin-top:1.5em;"></div>
@@ -45,6 +61,58 @@
     </div>
   </section>
   <script>
+    // Utility: Parse CSV string to array of objects
+    function parseCSV(csv, delimiter = ",") {
+      const lines = csv.trim().split("\n");
+      const headers = lines[0].split(delimiter).map(h => h.trim());
+      return lines.slice(1).map(line => {
+        const cols = line.split(delimiter).map(c => c.trim());
+        return Object.fromEntries(headers.map((h, i) => [h, cols[i] || ""]));
+      });
+    }
+
+    // Load patroller checkbox list
+    async function loadPatrollers() {
+      const patrollerDiv = document.getElementById("patroller-checkboxes");
+      try {
+        const res = await fetch("patrollers.csv");
+        if (!res.ok) {
+          patrollerDiv.innerHTML = "Could not load patroller data.";
+          return;
+        }
+        const csv = await res.text();
+        const data = parseCSV(csv);
+        if (!data.length) {
+          patrollerDiv.innerHTML = "No patrollers found.";
+          return;
+        }
+        // Prefer "Full Name & Surname" or fallback to first column
+        const nameField = Object.keys(data[0]).find(f =>
+          f.toLowerCase().includes("name")
+        ) || Object.keys(data[0])[0];
+        patrollerDiv.innerHTML = data
+          .map(
+            (p, idx) =>
+              `<label style="display:inline-block;width:48%;margin-bottom:0.5em;">
+                <input type="checkbox" name="patrollers" value="${p[nameField]}" /> ${p[nameField]}
+              </label>`
+          )
+          .join("");
+      } catch (err) {
+        patrollerDiv.innerHTML = "Error loading patrollers.";
+      }
+    }
+    window.onload = loadPatrollers;
+
+    // Book In/Out set current time
+    function setNow(fieldId) {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById(fieldId).value = `${hh}:${mm}`;
+    }
+
+    // Booking form handler
     document.getElementById("booking-form").onsubmit = function (e) {
       e.preventDefault();
       const form = e.target;
@@ -53,8 +121,9 @@
         eventType: formData.get("eventType"),
         obNumber: formData.get("obNumber"),
         shiftDate: formData.get("shiftDate"),
-        shiftTimes: formData.get("shiftTimes"),
-        patrollers: formData.get("patrollers"),
+        bookIn: formData.get("bookIn"),
+        bookOut: formData.get("bookOut"),
+        patrollers: formData.getAll("patrollers").join("; "),
         timestamp: new Date().toISOString(),
       };
 
@@ -62,7 +131,8 @@
         booking.eventType,
         booking.obNumber,
         booking.shiftDate,
-        booking.shiftTimes,
+        booking.bookIn,
+        booking.bookOut,
         booking.patrollers,
         booking.timestamp,
       ]
@@ -83,6 +153,7 @@
         '<span style="color:green;font-weight:bold;">Booking row generated! Please download and append this row to <code>shifts.csv</code> in the repo.</span>';
 
       form.reset();
+      loadPatrollers(); // reload checkboxes
     };
   </script>
 </body>
