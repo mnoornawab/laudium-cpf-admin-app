@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book a Shift - Laudium CPF</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <a href="index.html" style="display:block;text-align:center;margin-bottom:2em;">&larr; Back to Dashboard</a>
+  <h1 style="text-align:center;">Book a Shift</h1>
+  <section class="card" style="max-width:500px;margin:auto;">
+    <form id="booking-form" autocomplete="off">
+      <label>
+        Event Type:<br>
+        <select name="eventType" required>
+          <option value="">Select...</option>
+          <option>Visibility Patrols</option>
+          <option>Community Events</option>
+          <option>Meetings</option>
+          <option>Operations</option>
+        </select>
+      </label><br><br>
+      <label>
+        OB Number / Event Description:<br>
+        <input name="obNumber" required />
+      </label><br><br>
+      <label>
+        Shift Date:<br>
+        <input type="date" name="shiftDate" required />
+      </label><br><br>
+      <label>
+        Shift Times (e.g. 08:00-10:00,12:00-14:00):<br>
+        <input name="shiftTimes" required />
+      </label><br><br>
+      <label>
+        Patrollers Assigned (comma separated):<br>
+        <input name="patrollers" placeholder="e.g. Shaheen Wahab, Zahid Zaman" required />
+      </label><br><br>
+      <button type="submit" class="primary-btn">Book Shift</button>
+    </form>
+    <div id="booking-result" style="margin-top:1.5em;"></div>
+    <div style="font-size:0.95em;color:#444;margin-top:2em;">
+      <b>Note:</b> After booking, download the row and append it to <code>shifts.csv</code> in the repo.
+    </div>
+  </section>
+  <script>
+    document.getElementById("booking-form").onsubmit = function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const booking = {
+        eventType: formData.get("eventType"),
+        obNumber: formData.get("obNumber"),
+        shiftDate: formData.get("shiftDate"),
+        shiftTimes: formData.get("shiftTimes"),
+        patrollers: formData.get("patrollers"),
+        timestamp: new Date().toISOString(),
+      };
+
+      const csvRow = [
+        booking.eventType,
+        booking.obNumber,
+        booking.shiftDate,
+        booking.shiftTimes,
+        booking.patrollers,
+        booking.timestamp,
+      ]
+        .map(v => `"${(v || "").replace(/"/g, '""')}"`)
+        .join(",") + "\n";
+
+      // Download booking as CSV row
+      const blob = new Blob([csvRow], { type: "text/csv" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "shift-booking-row.csv";
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      document.getElementById("booking-result").innerHTML =
+        '<span style="color:green;font-weight:bold;">Booking row generated! Please download and append this row to <code>shifts.csv</code> in the repo.</span>';
+
+      form.reset();
+    };
+  </script>
+</body>
+</html>
