@@ -23,9 +23,21 @@
       margin-right: 0.6em;
       text-align: right;
     }
-    .shift-row label { margin-bottom: 0; margin-right:0.4em; }
-    .shift-row input[type="time"] { padding: 0.45em 0.2em; font-size:1em; }
-    .shift-actions { display: flex; align-items: center; gap: .23em; }
+    .shift-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.6em;
+      flex-wrap: wrap;
+    }
+    .shift-controls label {
+      margin-bottom: 0;
+      margin-right: 0.2em;
+      display: flex;
+      align-items: center;
+      font-weight: normal;
+      gap: 0.25em;
+    }
+    .shift-controls input[type="time"] { padding: 0.4em 0.2em; font-size:1em; }
     .small-btn {
       background: #1167b1;
       color: #fff;
@@ -37,7 +49,7 @@
       font-size: 0.97em;
       transition: background 0.2s;
       height: 2em;
-      margin-left: 0.2em;
+      margin-left: 0.1em;
       display: flex;
       align-items: center;
       gap: 0.15em;
@@ -167,16 +179,18 @@
       const shiftNum = Array.from(container.children).length + 1;
       row.innerHTML = `
         <span class="shift-label">Shift ${shiftNum}:</span>
-        <label>
-          Book In:
-          <input type="time" name="bookIn" id="bookIn-${shiftIndex}" value="${bookInVal}" required />
-          <button type="button" class="small-btn" onclick="setNow('bookIn-${shiftIndex}')">&#128337; Now</button>
-        </label>
-        <label>
-          Book Out:
-          <input type="time" name="bookOut" id="bookOut-${shiftIndex}" value="${bookOutVal}" required />
-          <button type="button" class="small-btn" onclick="setNow('bookOut-${shiftIndex}')">&#128337; Now</button>
-        </label>
+        <div class="shift-controls">
+          <label>
+            Book In:
+            <input type="time" name="bookIn" id="bookIn-${shiftIndex}" value="${bookInVal}" required />
+            <button type="button" class="small-btn" onclick="setNow('bookIn-${shiftIndex}')">&#128337; Now</button>
+          </label>
+          <label>
+            Book Out:
+            <input type="time" name="bookOut" id="bookOut-${shiftIndex}" value="${bookOutVal}" required />
+            <button type="button" class="small-btn" onclick="setNow('bookOut-${shiftIndex}')">&#128337; Now</button>
+          </label>
+        </div>
         ${shiftNum > 1 ? `<button type="button" class="remove-shift-btn" onclick="removeShiftRow('${row.id}')">✕</button>` : ''}
       `;
       container.appendChild(row);
