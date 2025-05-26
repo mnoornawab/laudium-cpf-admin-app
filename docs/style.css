@@ -6,6 +6,23 @@ body {
   padding: 1em;
   color: #333;
 }
+nav {
+  background: #333;
+  padding: 1em;
+  margin-bottom: 2em;
+  text-align: center;
+  border-radius: 8px;
+}
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0 1.2em;
+  font-size: 1.1em;
+}
+nav a:hover {
+  text-decoration: underline;
+}
 h1 {
   text-align: center;
 }
@@ -38,6 +55,7 @@ table {
   border-collapse: collapse;
   margin-top: 0.5em;
   margin-bottom: 1em;
+  word-break: break-word;
 }
 th, td {
   border: 1px solid #bbb;
@@ -51,6 +69,8 @@ fieldset {
   border: 1px solid #bbb;
   border-radius: 4px;
   padding: 0.8em;
+  max-height: 320px;
+  overflow-y: auto;
 }
 #booking-result {
   margin-top: 1em;
