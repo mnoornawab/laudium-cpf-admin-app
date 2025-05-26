@@ -5,72 +5,350 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Book a Shift - Laudium CPF</title>
   <link rel="stylesheet" href="style.css"/>
+  <style>
+    .form-label { display: block; font-weight: bold; margin-bottom: 0.4em; margin-top: 1em; text-align: left; }
+    .shift-row {
+      display: flex;
+      align-items: center;
+      gap: 1em;
+      margin-bottom: .7em;
+      background: #f7fafc;
+      border-radius: 7px;
+      padding: 0.6em 0.6em 0.6em 0.6em;
+      border: 1px solid #e2e8f0;
+    }
+    .shift-label {
+      font-weight: bold;
+      min-width: 55px;
+      margin-right: 0.8em;
+      text-align: right;
+    }
+    .shift-controls {
+      display: flex;
+      align-items: center;
+      gap: 1em;
+      flex-wrap: wrap;
+    }
+    .shift-controls label {
+      margin-bottom: 0;
+      margin-right: 0.3em;
+      display: flex;
+      align-items: center;
+      font-weight: normal;
+      gap: 0.25em;
+    }
+    .shift-controls input[type="time"] {
+      padding: 0.35em 0.1em;
+      font-size:1em;
+      margin-right: 0.2em;
+    }
+    .tiny-btn {
+      background: #1167b1;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 1em;
+      width: 1.9em;
+      height: 1.9em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-left: 0.1em;
+      padding: 0;
+    }
+    .tiny-btn:hover { background: #144e75; }
+    .remove-shift-btn {
+      background: #f44336;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1em;
+      padding: 0.18em 0.65em;
+      margin-left: 1em;
+      transition: background 0.2s;
+      height: 2em;
+    }
+    .remove-shift-btn:hover { background: #b71c1c; }
+    .add-shift-btn {
+      background: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1em;
+      padding: 0.45em 1.3em;
+      margin-top: 0.8em;
+      margin-bottom: 1em;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .patrollers-table-container {
+      background: #f4f6fa;
+      border-radius: 6px;
+      padding: 0.5em;
+      border: 1px solid #d7e1f3;
+      margin-top: 0.5em;
+      max-height: 210px;
+      overflow-y: auto;
+    }
+    .patrollers-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.98em;
+    }
+    .patrollers-table th, .patrollers-table td {
+      border: 1px solid #c7d4e7;
+      padding: 0.3em 0.6em;
+      text-align: left;
+      background: #fff;
+    }
+    .patrollers-table th {
+      background: #e7f0fa;
+      font-weight: bold;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .patroller-checkbox { display: flex; justify-content: center; align-items: center; }
+    .primary-btn { width: 100%; margin-top: 1.4em; }
+    @media (max-width: 650px) {
+      .card { padding: 1em;}
+      .patrollers-table th, .patrollers-table td { font-size:0.91em; padding: 0.2em 0.3em;}
+      .shift-row { flex-direction: column; align-items: stretch;}
+      .shift-label { min-width: 0; margin-right: 0; text-align: left;}
+      .remove-shift-btn { margin-left:0;}
+      .shift-controls {flex-wrap: wrap;}
+    }
+  </style>
 </head>
 <body>
   <a href="index.html" style="display:block;text-align:center;margin-bottom:2em;">&larr; Back to Dashboard</a>
   <h1 style="text-align:center;">Book a Shift</h1>
-  <section class="card" style="max-width:500px;margin:auto;">
+  <section class="card" style="max-width:580px;margin:auto;">
     <form id="booking-form" autocomplete="off">
-      <label>
-        Event Type:<br>
-        <select name="eventType" required>
+      <label class="form-label">Event Type:
+        <select name="eventType" required style="width:100%;padding:0.5em;">
           <option value="">Select...</option>
           <option>Visibility Patrols</option>
           <option>Community Events</option>
           <option>Meetings</option>
           <option>Operations</option>
         </select>
-      </label><br><br>
-      <label>
-        OB Number / Event Description:<br>
-        <input name="obNumber" required />
-      </label><br><br>
-      <label>
-        Shift Date:<br>
-        <input type="date" name="shiftDate" required />
-      </label><br><br>
-      <label>
-        Shift Times (e.g. 08:00-10:00,12:00-14:00):<br>
-        <input name="shiftTimes" required />
-      </label><br><br>
-      <label>
-        Patrollers Assigned (comma separated):<br>
-        <input name="patrollers" placeholder="e.g. Shaheen Wahab, Zahid Zaman" required />
-      </label><br><br>
+      </label>
+      <label class="form-label">OB Number / Event Description:
+        <input name="obNumber" required style="width:100%;padding:0.5em;" />
+      </label>
+      <label class="form-label">Shift Date:
+        <input type="date" name="shiftDate" required style="width:100%;padding:0.5em;"/>
+      </label>
+      <div id="shifts-container"></div>
+      <button type="button" class="add-shift-btn" onclick="addShiftRow()">+ Add Another Shift Slot</button>
+      <label class="form-label" style="margin-bottom:0.4em;">Patrollers Attended:</label>
+      <div class="patrollers-table-container">
+        <table class="patrollers-table" id="patrollers-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Full Name & Surname</th>
+              <th>ID Card No</th>
+              <th style="text-align:center;">Attended</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="4" style="text-align:center;">Loading patroller list...</td></tr>
+          </tbody>
+        </table>
+      </div>
       <button type="submit" class="primary-btn">Book Shift</button>
     </form>
-    <div id="booking-result" style="margin-top:1.5em;"></div>
+    <div id="booking-result" style="margin-top:1.2em;"></div>
     <div style="font-size:0.95em;color:#444;margin-top:2em;">
       <b>Note:</b> After booking, download the row and append it to <code>shifts.csv</code> in the repo.
     </div>
   </section>
   <script>
-    document.getElementById("booking-form").onsubmit = function (e) {
-      e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
-      const booking = {
-        eventType: formData.get("eventType"),
-        obNumber: formData.get("obNumber"),
-        shiftDate: formData.get("shiftDate"),
-        shiftTimes: formData.get("shiftTimes"),
-        patrollers: formData.get("patrollers"),
-        timestamp: new Date().toISOString(),
-      };
+    // --- Dynamic shift slots ---
+    let shiftIndex = 0;
+    function addShiftRow(bookInVal = "", bookOutVal = "") {
+      shiftIndex++;
+      const container = document.getElementById("shifts-container");
+      const row = document.createElement("div");
+      row.className = "shift-row";
+      row.id = "shift-row-" + shiftIndex;
+      const shiftNum = Array.from(container.children).length + 1;
+      row.innerHTML = `
+        <span class="shift-label">Shift ${shiftNum}:</span>
+        <div class="shift-controls">
+          <label>
+            Book In:
+            <input type="time" name="bookIn" id="bookIn-${shiftIndex}" value="${bookInVal}" required />
+            <button type="button" class="tiny-btn" aria-label="Set Now" onclick="setNow('bookIn-${shiftIndex}')">&#128337;</button>
+          </label>
+          <label>
+            Book Out:
+            <input type="time" name="bookOut" id="bookOut-${shiftIndex}" value="${bookOutVal}" required />
+            <button type="button" class="tiny-btn" aria-label="Set Now" onclick="setNow('bookOut-${shiftIndex}')">&#128337;</button>
+          </label>
+        </div>
+        ${shiftNum > 1 ? `<button type="button" class="remove-shift-btn" onclick="removeShiftRow('${row.id}')">✕</button>` : ''}
+      `;
+      container.appendChild(row);
+      updateShiftLabels();
+    }
+    function removeShiftRow(rowId) {
+      const row = document.getElementById(rowId);
+      if (row) row.remove();
+      updateShiftLabels();
+    }
+    function updateShiftLabels() {
+      const container = document.getElementById("shifts-container");
+      Array.from(container.children).forEach((row, idx) => {
+        row.querySelector('.shift-label').textContent = `Shift ${idx + 1}:`;
+        // Only show remove button if more than one shift
+        const removeBtn = row.querySelector('.remove-shift-btn');
+        if (removeBtn) {
+          removeBtn.style.display = container.children.length > 1 ? 'inline-block' : 'none';
+        }
+      });
+    }
+    // Start with one shift slot by default
+    window.addEventListener("DOMContentLoaded", () => { addShiftRow(); loadPatrollersTable(); });
 
-      const csvRow = [
-        booking.eventType,
-        booking.obNumber,
-        booking.shiftDate,
-        booking.shiftTimes,
-        booking.patrollers,
-        booking.timestamp,
-      ]
-        .map(v => `"${(v || "").replace(/"/g, '""')}"`)
-        .join(",") + "\n";
+    function setNow(fieldId) {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById(fieldId).value = `${hh}:${mm}`;
+    }
 
-      // Download booking as CSV row
-      const blob = new Blob([csvRow], { type: "text/csv" });
+    // CSV parser
+    function parseCSV(csv, delimiter = ",") {
+      const lines = csv.trim().split("\n");
+      const headers = lines[0].split(delimiter).map(h => h.trim());
+      return lines.slice(1).map(line => {
+        const cols = line.split(delimiter).map(c => c.trim());
+        return Object.fromEntries(headers.map((h, i) => [h, cols[i] || ""]));
+      });
+    }
+
+    // Load patroller table with checkboxes
+    async function loadPatrollersTable() {
+      const table = document.getElementById("patrollers-table").getElementsByTagName("tbody")[0];
+      table.innerHTML = `<tr><td colspan="4" style="text-align:center;">Loading patroller list...</td></tr>`;
+      try {
+        const res = await fetch("patrollers.csv");
+        if (!res.ok) {
+          table.innerHTML = `<tr><td colspan="4" style="text-align:center;">Could not load patroller data.</td></tr>`;
+          return;
+        }
+        const csv = await res.text();
+        const data = parseCSV(csv);
+        if (!data.length) {
+          table.innerHTML = `<tr><td colspan="4" style="text-align:center;">No patrollers found.</td></tr>`;
+          return;
+        }
+        // Find header names
+        const nameField = Object.keys(data[0]).find(f =>
+          f.toLowerCase().includes("full name")
+        ) || Object.keys(data[0])[0];
+        const idField = Object.keys(data[0]).find(f =>
+          f.toLowerCase().includes("id card")
+        ) || Object.keys(data[0])[1];
+
+        table.innerHTML = data
+          .map(
+            (p, idx) =>
+              `<tr>
+                <td>${idx + 1}</td>
+                <td>${p[nameField]}</td>
+                <td>${p[idField]}</td>
+                <td class="patroller-checkbox">
+                  <input type="checkbox" name="patrollers" value="${p[nameField]} (${p[idField]})"/>
+                </td>
+              </tr>`
+          )
+          .join("");
+      } catch (err) {
+        table.innerHTML = `<tr><td colspan="4" style="text-align:center;">Error loading patrollers.</td></tr>`;
+      }
+    }
+
+  // Booking form handler (multiple shift slots)
+document.getElementById("booking-form").onsubmit = async function (e) {
+  e.preventDefault();
+  const form = e.target;
+  const formData = new FormData(form);
+
+  // Collect all shift slots
+  const bookInList = formData.getAll("bookIn");
+  const bookOutList = formData.getAll("bookOut");
+  const shiftSlots = bookInList.map((inVal, idx) => ({
+    bookIn: inVal,
+    bookOut: bookOutList[idx] || ""
+  }));
+
+  // Collect all patrollers attended
+  const patrollers = formData.getAll("patrollers").join("; ");
+
+  // For each shift slot, send a request to PHP
+  let allOk = true, errors = [];
+  for (let idx = 0; idx < shiftSlots.length; idx++) {
+    const payload = new FormData();
+    payload.append("eventType", formData.get("eventType"));
+    payload.append("obNumber", formData.get("obNumber"));
+    payload.append("shiftDate", formData.get("shiftDate"));
+    payload.append("shiftNo", `Shift ${idx+1}`);
+    payload.append("bookIn", shiftSlots[idx].bookIn);
+    payload.append("bookOut", shiftSlots[idx].bookOut);
+    payload.append("patrollers", patrollers);
+
+    // POST to your PHP script
+    const resp = await fetch("https://yourdomain.com/save_shift_to_github.php", {
+      method: "POST",
+      body: payload
+    });
+    const text = await resp.text();
+    if (text.trim() !== "OK") {
+      allOk = false;
+      errors.push(`Shift ${idx+1}: ${text}`);
+    }
+  }
+
+  if (allOk) {
+    document.getElementById("booking-result").innerHTML =
+      '<span style="color:green;font-weight:bold;">Shift booking(s) saved successfully!</span>';
+    form.reset();
+    document.getElementById("shifts-container").innerHTML = "";
+    addShiftRow();
+    loadPatrollersTable();
+  } else {
+    document.getElementById("booking-result").innerHTML =
+      `<span style="color:red;font-weight:bold;">Error saving shift(s):<br>${errors.join("<br>")}</span>`;
+  }
+};
+
+      // CSV: one row per shift slot for the same event/date
+      const csvRows = booking.shiftSlots.map((slot, idx) =>
+        [
+          booking.eventType,
+          booking.obNumber,
+          booking.shiftDate,
+          `Shift ${idx+1}`,
+          slot.bookIn,
+          slot.bookOut,
+          booking.patrollers,
+          booking.timestamp,
+        ].map(v => `"${(v || "").replace(/"/g, '""')}"`).join(",")
+      ).join("\n") + "\n";
+
+      // Download booking as CSV row(s)
+      const blob = new Blob([csvRows], { type: "text/csv" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
       a.download = "shift-booking-row.csv";
@@ -80,9 +358,13 @@
       document.body.removeChild(a);
 
       document.getElementById("booking-result").innerHTML =
-        '<span style="color:green;font-weight:bold;">Booking row generated! Please download and append this row to <code>shifts.csv</code> in the repo.</span>';
+        '<span style="color:green;font-weight:bold;">Booking row(s) generated! Please download and append these row(s) to <code>shifts.csv</code> in the repo.</span>';
 
       form.reset();
+      // reset shift slot rows to 1
+      document.getElementById("shifts-container").innerHTML = "";
+      addShiftRow();
+      loadPatrollersTable();
     };
   </script>
 </body>
