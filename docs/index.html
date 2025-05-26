@@ -3,60 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Laudium CPF Shift Booking Admin</title>
+  <title>Laudium CPF Dashboard</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <h1>Laudium CPF Shift Booking Admin</h1>
-
-  <section id="patrollers-section">
-    <h2>Patroller List</h2>
-    <button id="load-patrollers">Load Patrollers</button>
-    <table id="patrollers-table"></table>
-  </section>
-
-  <section id="booking-section">
-    <h2>Book a Shift</h2>
-    <form id="booking-form">
-      <label>
-        Event Type:
-        <select name="eventType" required>
-          <option value="">Select...</option>
-          <option>Visibility Patrols</option>
-          <option>Community Events</option>
-          <option>Meetings</option>
-          <option>Operations</option>
-        </select>
-      </label><br/>
-      <label>
-        OB Number / Event Description:
-        <input name="obNumber" required />
-      </label><br/>
-      <label>
-        Shift Date:
-        <input type="date" name="shiftDate" required />
-      </label><br/>
-      <label>
-        Shift Times (comma separated e.g. 08:00-10:00,12:00-14:00):
-        <input name="shiftTimes" required />
-      </label><br/>
-      <fieldset>
-        <legend>Patrollers Assigned</legend>
-        <div id="patroller-checkboxes">
-          <!-- checkboxes loaded from CSV -->
-        </div>
-      </fieldset>
-      <button type="submit">Book Shift</button>
-    </form>
-    <div id="booking-result"></div>
-  </section>
-
+  <nav>
+    <a href="index.html">Dashboard</a> |
+    <a href="shiftbooking.html">Book a Shift</a>
+    <!-- Add more links as needed -->
+  </nav>
+  <h1>Laudium CPF Shift Dashboard</h1>
   <section id="dashboard-section">
-    <h2>Dashboard</h2>
+    <button class="primary-btn" onclick="window.location.href='shiftbooking.html'">Book a Shift</button>
     <button id="load-dashboard">Refresh Dashboard</button>
     <div id="dashboard"></div>
   </section>
-
   <script src="app.js"></script>
+  <script>
+    window.onload = () => {
+      loadDashboard();
+    }
+    document.getElementById("load-dashboard").onclick = loadDashboard;
+  </script>
 </body>
 </html>
