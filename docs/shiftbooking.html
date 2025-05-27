@@ -453,9 +453,7 @@
         </div>
         
         <div class="shifts-container" id="shifts-container"></div>
-        <br>
-		<br>
-		
+        
         <button type="button" class="btn btn-success" id="add-shift-btn" style="margin: 1.5rem auto;">
           <i class="fas fa-plus"></i> Add Shift Slot
         </button>
@@ -732,75 +730,118 @@
       }
     }
     
+    // Initialize form when DOM is loaded
+    window.addEventListener("DOMContentLoaded", () => {
+      // Set default date to today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById("shiftDate").value = today;
+      
+      // Initialize shifts container
+      document.getElementById("shifts-container").innerHTML = "";
+      shiftIndex = 0;
+      addShiftRow();
+      
+      // Initialize OB Number/Event Description field
+      updateObNumberField();
+      
+      // Watch for event type changes
+      document.getElementById("eventType").addEventListener("change", updateObNumberField);
+      
+      // Load patrollers
+      loadPatrollersTable();
+      
+      // Add event listener for add shift button
+      document.getElementById("add-shift-btn").addEventListener("click", addShiftRow);
+    });
+    
+    // Handle form submission - UPDATED VERSION
     document.getElementById("booking-form").addEventListener("submit", async function(e) {
-    e.preventDefault();
-    
-    // 1. Get selected patrollers
-    const selectedPatrollers = Array.from(
-        document.querySelectorAll("input[name='patrollers']:checked")
-    ).map(cb => cb.value);
-    
-    if (selectedPatrollers.length === 0) {
-        alert("Please select at least one patroller");
+      e.preventDefault();
+      const form = e.target;
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const resultDiv = document.getElementById("booking-result");
+      
+      // Validate form
+      if (!form.checkValidity()) {
+        form.reportValidity();
         return;
-    }
-
-    // 2. Prepare common data
-    const formData = {
-        eventType: document.getElementById("eventType").value,
-        shiftDate: document.getElementById("shiftDate").value,
-        bookIn: document.getElementById("bookIn-1").value,
-        bookOut: document.getElementById("bookOut-1").value,
-        obIn: document.getElementById("obIn")?.value || '',
-        obOut: document.getElementById("obOut")?.value || '',
-        eventDescription: document.getElementById("eventDescription")?.value || ''
-    };
-
-    // 3. Show loading state
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-
-    // 4. Submit each patroller separately
-    try {
+      }
+      
+      // Get selected patrollers
+      const selectedPatrollers = Array.from(
+        document.querySelectorAll("input[name='patrollers']:checked")
+      ).map(cb => cb.value);
+      
+      if (selectedPatrollers.length === 0) {
+        resultDiv.innerHTML = `
+          <div class="status-message status-error">
+            <i class="fas fa-exclamation-circle"></i>
+            Please select at least one patroller
+          </div>
+        `;
+        return;
+      }
+      
+      // Show loading state
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+      resultDiv.innerHTML = "";
+      
+      try {
+        // Prepare common data
+        const formData = {
+          eventType: document.getElementById("eventType").value,
+          shiftDate: document.getElementById("shiftDate").value,
+          bookIn: document.getElementById("bookIn-1").value,
+          bookOut: document.getElementById("bookOut-1").value,
+          obIn: document.getElementById("obIn")?.value || '',
+          obOut: document.getElementById("obOut")?.value || '',
+          eventDescription: document.getElementById("eventDescription")?.value || ''
+        };
+        
+        // Submit each patroller separately
         const results = [];
         for (const patroller of selectedPatrollers) {
-            const response = await fetch('https://yourdomain.com/docs/shift.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...formData, patroller })
-            });
-            results.push(await response.json());
+          const response = await fetch('https://laudiumcpf.co.za/docs/shift.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...formData, patroller })
+          });
+          results.push(await response.json());
         }
-
-        // 5. Check all succeeded
+        
+        // Check all succeeded
         if (results.every(r => r.status === 'success')) {
-            document.getElementById("booking-result").innerHTML = `
-                <div class="status-message status-success">
-                    <i class="fas fa-check-circle"></i>
-                    Saved successfully for ${selectedPatrollers.length} patrollers
-                </div>
-            `;
-            
-            // Reset form but keep one shift
-            e.target.reset();
-            document.getElementById("shifts-container").innerHTML = "";
-            shiftIndex = 0;
-            addShiftRow();
-            document.getElementById("shiftDate").value = new Date().toISOString().split('T')[0];
-            updateObNumberField();
-        } else {
-            throw new Error("Some submissions failed");
-        }
-    } catch (error) {
-        document.getElementById("booking-result").innerHTML = `
-            <div class="status-message status-error">
-                <i class="fas fa-exclamation-circle"></i>
-                Error: ${error.message}
+          resultDiv.innerHTML = `
+            <div class="status-message status-success">
+              <i class="fas fa-check-circle"></i>
+              Successfully booked shifts for ${selectedPatrollers.length} patroller(s)
             </div>
+          `;
+          
+          // Reset form but keep one shift
+          form.reset();
+          document.getElementById("shifts-container").innerHTML = "";
+          shiftIndex = 0;
+          addShiftRow();
+          document.getElementById("shiftDate").value = new Date().toISOString().split('T')[0];
+          updateObNumberField();
+        } else {
+          throw new Error("Some shifts failed to save");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        resultDiv.innerHTML = `
+          <div class="status-message status-error">
+            <i class="fas fa-exclamation-circle"></i>
+            Error: ${error.message}
+          </div>
         `;
-    } finally {
+      } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fas fa-calendar-check"></i> Book Shift';
-    }
-});
+      }
+    });
+  </script>
+</body>
+</html>
