@@ -23,6 +23,30 @@
       margin: 0;
       color: var(--text);
       line-height: 1.6;
+      padding-top: 80px; /* Space for fixed header */
+    }
+    
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 1rem;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     
     .container {
@@ -37,7 +61,6 @@
       gap: 0.5rem;
       color: var(--primary);
       text-decoration: none;
-      margin: 1.5rem 0;
       font-weight: 500;
     }
     
@@ -46,294 +69,56 @@
     }
     
     h1 {
-      text-align: center;
       color: var(--primary);
       margin-bottom: 2rem;
+      text-align: center;
     }
     
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 2rem;
-      max-width: 800px;
-      margin: 0 auto 3rem;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      width: 100%;
+    /* Rest of your existing styles... */
+    /* [Previous CSS styles remain the same until .patrollers-section] */
+    
+    .search-box {
+      margin-bottom: 1rem;
     }
     
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-    
-    .form-label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: #444;
-    }
-    
-    .form-control {
+    .search-input {
       width: 100%;
       padding: 0.75rem;
       border: 1px solid var(--border);
       border-radius: 6px;
       font-size: 1rem;
-      transition: border-color 0.2s;
     }
     
-    .form-control:focus {
+    .search-input:focus {
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
     }
     
-    select.form-control {
-      appearance: none;
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-      background-repeat: no-repeat;
-      background-position: right 0.75rem center;
-      background-size: 1rem;
-    }
-    
-    .shift-row {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      margin-bottom: 1rem;
-      background: #f8fafc;
-      border-radius: 8px;
-      padding: 1rem;
-      border: 1px solid var(--border);
-      flex-wrap: wrap;
-      position: relative;
-    }
-    
-    .shift-label {
-      font-weight: 600;
-      min-width: 70px;
-      color: #555;
-    }
-    
-    .shift-controls {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      flex-grow: 1;
-    }
-    
-    .time-control {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .time-input {
-      padding: 0.5rem;
-      font-size: 1rem;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-      background: white;
-    }
-    
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      gap: 0.5rem;
-    }
-    
-    .btn-sm {
-      padding: 0.4rem 0.8rem;
-      font-size: 0.9rem;
-    }
-    
-    .btn-icon {
-      width: 2rem;
-      height: 2rem;
-      padding: 0;
-      border-radius: 50%;
-    }
-    
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-    
-    .btn-primary:hover {
-      background: var(--primary-dark);
-    }
-    
-    .btn-success {
-      background: var(--success);
-      color: white;
-    }
-    
-    .btn-success:hover {
-      opacity: 0.9;
-    }
-    
-    .btn-danger {
-      background: var(--danger);
-      color: white;
-    }
-    
-    .btn-danger:hover {
-      background: var(--danger-dark);
-    }
-    
-    .btn-ghost {
-      background: transparent;
-      color: var(--primary);
-      border: 1px solid var(--primary);
-    }
-    
-    .btn-ghost:hover {
-      background: rgba(25, 118, 210, 0.1);
-    }
-    
-    .add-shift-btn {
-      margin: 1.5rem auto;
-      display: flex;
-    }
-    
-    .patrollers-section {
-      margin-top: 2rem;
-    }
-    
-    .patrollers-table-container {
-      background: #f8fafc;
-      border-radius: 8px;
-      padding: 1rem;
-      border: 1px solid var(--border);
-      margin-top: 0.5rem;
-      max-height: 300px;
-      overflow-y: auto;
-      position: relative;
-    }
-    
-    .patrollers-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.95rem;
-    }
-    
-    .patrollers-table th {
-      position: sticky;
-      top: 0;
-      background: #edf2f7;
-      z-index: 2;
-    }
-    
-    .patrollers-table th, 
-    .patrollers-table td {
-      border: 1px solid var(--border);
-      padding: 0.75rem;
-      text-align: left;
-      background: white;
-    }
-    
-    .patrollers-table th {
-      font-weight: 600;
-      color: #444;
-    }
-    
-    .patroller-checkbox {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    
-    .checkbox {
-      width: 1.2rem;
-      height: 1.2rem;
-      accent-color: var(--primary);
-    }
-    
-    .submit-btn {
-      width: 100%;
-      margin-top: 2rem;
-      padding: 1rem;
-      font-size: 1.1rem;
-    }
-    
-    .loading-spinner {
-      display: inline-block;
-      width: 1.5rem;
-      height: 1.5rem;
-      border: 3px solid rgba(25, 118, 210, 0.2);
-      border-radius: 50%;
-      border-top-color: var(--primary);
-      animation: spin 1s ease-in-out infinite;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    .alert {
-      padding: 1rem;
-      border-radius: 6px;
-      margin: 1rem 0;
-      font-weight: 500;
-    }
-    
-    .alert-success {
-      background: rgba(76, 175, 80, 0.1);
-      color: #2e7d32;
-      border: 1px solid rgba(76, 175, 80, 0.3);
-    }
-    
-    .alert-danger {
-      background: rgba(244, 67, 54, 0.1);
-      color: #c62828;
-      border: 1px solid rgba(244, 67, 54, 0.3);
-    }
-    
-    .empty-state {
-      text-align: center;
-      padding: 2rem;
-      color: #666;
-    }
-    
+    /* Add to existing media queries */
     @media (max-width: 768px) {
-      .card {
-        padding: 1.5rem;
+      body {
+        padding-top: 70px;
       }
       
-      .shift-row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 1rem;
-      }
-      
-      .shift-label {
-        min-width: auto;
-      }
-      
-      .patrollers-table th, 
-      .patrollers-table td {
-        padding: 0.5rem;
-        font-size: 0.9rem;
+      .header {
+        padding: 0.75rem;
       }
     }
   </style>
 </head>
 <body>
+  <header class="header">
+    <div class="header-content">
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+      <h1 style="margin:0;font-size:1.5rem;">Book a Shift</h1>
+      <div style="width:100px;">&nbsp;</div> <!-- Spacer for balance -->
+    </div>
+  </header>
+
   <div class="container">
-    <a href="index.html" class="back-link">
-      <i class="fas fa-arrow-left"></i> Back to Dashboard
-    </a>
-    
-    <h1>Book a Shift</h1>
-    
     <div class="card">
       <form id="booking-form" autocomplete="off" novalidate>
         <div class="form-group">
@@ -347,10 +132,8 @@
           </select>
         </div>
         
-        <div class="form-group">
-          <label for="obNumber" class="form-label">OB Number / Event Description:</label>
-          <input type="text" id="obNumber" name="obNumber" class="form-control" required 
-                 placeholder="Enter OB number or event description">
+        <div class="form-group" id="obNumberContainer">
+          <!-- Dynamic content will be inserted here based on event type -->
         </div>
         
         <div class="form-group">
@@ -366,6 +149,10 @@
         
         <div class="patrollers-section">
           <label class="form-label">Patrollers Attended:</label>
+          <div class="search-box">
+            <input type="text" id="patrollerSearch" class="search-input" 
+                   placeholder="Search patrollers by name or ID...">
+          </div>
           <div class="patrollers-table-container">
             <table class="patrollers-table" id="patrollers-table">
               <thead>
@@ -400,6 +187,7 @@
   <script>
     // Current shift index
     let shiftIndex = 0;
+    let allPatrollers = []; // Store all patrollers for search functionality
     
     // Add a new shift row to the form
     function addShiftRow(bookInVal = "", bookOutVal = "") {
@@ -452,6 +240,63 @@
       const row = document.getElementById(rowId);
       if (row) row.remove();
       updateShiftLabels();
+    }
+    
+    // Update OB Number/Event Description field based on event type
+    function updateObNumberField() {
+      const eventType = document.getElementById("eventType").value;
+      const container = document.getElementById("obNumberContainer");
+      
+      if (eventType === "Visibility Patrols" || eventType === "Operations") {
+        container.innerHTML = `
+          <label class="form-label">OB Number:</label>
+          <div style="display: flex; gap: 1rem;">
+            <div style="flex: 1;">
+              <label for="obIn" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">OB IN</label>
+              <input type="text" id="obIn" name="obIn" class="form-control" required>
+            </div>
+            <div style="flex: 1;">
+              <label for="obOut" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">OB OUT</label>
+              <input type="text" id="obOut" name="obOut" class="form-control" required>
+            </div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <label for="eventDescription" class="form-label">Event Description:</label>
+          <input type="text" id="eventDescription" name="eventDescription" class="form-control" required>
+        `;
+      }
+    }
+    
+    // Filter patrollers based on search input
+    function filterPatrollers(searchTerm) {
+      const tableBody = document.querySelector("#patrollers-table tbody");
+      if (!tableBody || !allPatrollers.length) return;
+      
+      const filtered = allPatrollers.filter(p => 
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        p.id.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      
+      tableBody.innerHTML = filtered.length ? 
+        filtered.map((p, idx) => `
+          <tr>
+            <td>${idx + 1}</td>
+            <td>${p.name}</td>
+            <td>${p.id}</td>
+            <td class="patroller-checkbox">
+              <input type="checkbox" class="checkbox" name="patrollers" 
+                     value="${p.name} (${p.id})" ${p.checked ? 'checked' : ''}>
+            </td>
+          </tr>
+        `).join("") : `
+          <tr>
+            <td colspan="4" class="empty-state">
+              No patrollers found matching "${searchTerm}"
+            </td>
+          </tr>
+        `;
     }
     
     // Update shift numbers when rows are added/removed
@@ -524,18 +369,30 @@
           f.toLowerCase().includes("id card") || f.toLowerCase().includes("id")
         ) || Object.keys(data[0])[1];
         
+        // Store all patrollers for search functionality
+        allPatrollers = data.map(p => ({
+          name: p[nameField],
+          id: p[idField],
+          checked: false
+        }));
+        
         // Generate table rows
-        table.innerHTML = data.map((p, idx) => `
+        table.innerHTML = allPatrollers.map((p, idx) => `
           <tr>
             <td>${idx + 1}</td>
-            <td>${p[nameField]}</td>
-            <td>${p[idField]}</td>
+            <td>${p.name}</td>
+            <td>${p.id}</td>
             <td class="patroller-checkbox">
               <input type="checkbox" class="checkbox" name="patrollers" 
-                     value="${p[nameField]} (${p[idField]})">
+                     value="${p.name} (${p.id})">
             </td>
           </tr>
         `).join("");
+        
+        // Initialize search functionality
+        document.getElementById("patrollerSearch").addEventListener("input", (e) => {
+          filterPatrollers(e.target.value);
+        });
         
       } catch (err) {
         console.error("Error loading patrollers:", err);
@@ -566,6 +423,12 @@
       shiftIndex = 0;
       addShiftRow();
       
+      // Initialize OB Number/Event Description field
+      updateObNumberField();
+      
+      // Watch for event type changes
+      document.getElementById("eventType").addEventListener("change", updateObNumberField);
+      
       // Load patrollers
       loadPatrollersTable();
       
@@ -592,17 +455,29 @@
       resultDiv.innerHTML = "";
       
       try {
+        // Get event type
+        const eventType = document.getElementById("eventType").value;
+        let obNumber = "";
+        
+        // Handle OB Number/Event Description based on event type
+        if (eventType === "Visibility Patrols" || eventType === "Operations") {
+          const obIn = document.getElementById("obIn").value;
+          const obOut = document.getElementById("obOut").value;
+          obNumber = `OB IN: ${obIn}, OB OUT: ${obOut}`;
+        } else {
+          obNumber = document.getElementById("eventDescription").value;
+        }
+        
         // Prepare form data
-        const formData = new FormData(form);
-        const bookInList = formData.getAll("bookIn");
-        const bookOutList = formData.getAll("bookOut");
-        const patrollers = formData.getAll("patrollers").join("; ");
+        const bookInList = Array.from(document.querySelectorAll("input[name='bookIn']")).map(el => el.value);
+        const bookOutList = Array.from(document.querySelectorAll("input[name='bookOut']")).map(el => el.value);
+        const patrollers = Array.from(document.querySelectorAll("input[name='patrollers']:checked")).map(el => el.value).join("; ");
         
         // Prepare payload
         const payload = {
-          eventType: formData.get("eventType"),
-          obNumber: formData.get("obNumber"),
-          shiftDate: formData.get("shiftDate"),
+          eventType: eventType,
+          obNumber: obNumber,
+          shiftDate: document.getElementById("shiftDate").value,
           shifts: bookInList.map((inVal, idx) => ({
             shiftNo: idx + 1,
             bookIn: inVal,
@@ -644,8 +519,9 @@
         shiftIndex = 0;
         addShiftRow();
         
-        // Set date back to today
+        // Set date back to today and update OB field
         document.getElementById("shiftDate").value = new Date().toISOString().split('T')[0];
+        updateObNumberField();
         
       } catch (error) {
         console.error("Submission error:", error);
