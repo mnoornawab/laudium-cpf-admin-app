@@ -4,320 +4,662 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Book a Shift - Laudium CPF</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f6fa; margin: 0; }
-    .card { background: #fff; border-radius: 12px; padding: 2em; max-width: 98vw; margin: 2em auto; box-shadow: 0 2px 16px #0001; width: 100%; }
-    .form-label { display: block; font-weight: bold; margin-bottom: 0.4em; margin-top: 1em; text-align: left; }
+    :root {
+      --primary: #1976d2;
+      --primary-dark: #125da7;
+      --success: #4caf50;
+      --danger: #f44336;
+      --danger-dark: #b71c1c;
+      --text: #333;
+      --light-gray: #f5f6fa;
+      --border: #e2e8f0;
+    }
+    
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background: var(--light-gray); 
+      margin: 0;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary);
+      text-decoration: none;
+      margin: 1.5rem 0;
+      font-weight: 500;
+    }
+    
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 2rem;
+    }
+    
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto 3rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      width: 100%;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #444;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+    }
+    
+    select.form-control {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1rem;
+    }
+    
     .shift-row {
       display: flex;
       align-items: center;
-      gap: 1em;
-      margin-bottom: .7em;
-      background: #f7fafc;
-      border-radius: 7px;
-      padding: 0.6em;
-      border: 1px solid #e2e8f0;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 1rem;
+      border: 1px solid var(--border);
       flex-wrap: wrap;
+      position: relative;
     }
-    .shift-label { font-weight: bold; min-width: 55px; margin-right: 0.8em; text-align: right; }
+    
+    .shift-label {
+      font-weight: 600;
+      min-width: 70px;
+      color: #555;
+    }
+    
     .shift-controls {
       display: flex;
       align-items: center;
-      gap: 1em;
+      gap: 1.5rem;
       flex-wrap: wrap;
+      flex-grow: 1;
     }
-    .shift-controls label {
-      margin-bottom: 0;
-      margin-right: 0.3em;
+    
+    .time-control {
       display: flex;
       align-items: center;
-      font-weight: normal;
-      gap: 0.25em;
+      gap: 0.5rem;
     }
-    .shift-controls input[type="time"] {
-      padding: 0.35em 0.1em;
-      font-size:1em;
-      margin-right: 0.2em;
-      border-radius: 3px;
-      border: 1px solid #bbb;
+    
+    .time-input {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: white;
     }
-    .tiny-btn {
-      background: #1167b1;
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      font-size: 1em;
-      width: 1.9em;
-      height: 1.9em;
-      display: flex;
+    
+    .btn {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      transition: background 0.2s;
-      margin-left: 0.1em;
-      padding: 0;
-    }
-    .tiny-btn:hover { background: #144e75; }
-    .remove-shift-btn {
-      background: #f44336;
-      color: #fff;
       border: none;
-      border-radius: 4px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 1em;
-      padding: 0.18em 0.65em;
-      margin-left: 1em;
-      transition: background 0.2s;
-      height: 2em;
-    }
-    .remove-shift-btn:hover { background: #b71c1c; }
-    .add-shift-btn {
-      background: #4caf50;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 1em;
-      padding: 0.45em 1.3em;
-      margin-top: 0.8em;
-      margin-bottom: 1em;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .patrollers-table-container {
-      background: #f4f6fa;
       border-radius: 6px;
-      padding: 0.5em;
-      border: 1px solid #d7e1f3;
-      margin-top: 0.5em;
-      max-height: 210px;
-      overflow-y: auto;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      gap: 0.5rem;
     }
+    
+    .btn-sm {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.9rem;
+    }
+    
+    .btn-icon {
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+      border-radius: 50%;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+    
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+    
+    .btn-success:hover {
+      opacity: 0.9;
+    }
+    
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: var(--danger-dark);
+    }
+    
+    .btn-ghost {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    
+    .btn-ghost:hover {
+      background: rgba(25, 118, 210, 0.1);
+    }
+    
+    .add-shift-btn {
+      margin: 1.5rem auto;
+      display: flex;
+    }
+    
+    .patrollers-section {
+      margin-top: 2rem;
+    }
+    
+    .patrollers-table-container {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      margin-top: 0.5rem;
+      max-height: 300px;
+      overflow-y: auto;
+      position: relative;
+    }
+    
     .patrollers-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.98em;
+      font-size: 0.95rem;
     }
-    .patrollers-table th, .patrollers-table td {
-      border: 1px solid #c7d4e7;
-      padding: 0.3em 0.6em;
-      text-align: left;
-      background: #fff;
-    }
+    
     .patrollers-table th {
-      background: #e7f0fa;
-      font-weight: bold;
       position: sticky;
       top: 0;
-      z-index: 1;
+      background: #edf2f7;
+      z-index: 2;
     }
-    .patroller-checkbox { display: flex; justify-content: center; align-items: center; }
-    .primary-btn { width: 100%; margin-top: 1.4em; background: #1976d2; color: #fff; border: none; padding: 0.9em; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer;}
-    .primary-btn:hover { background: #125da7; }
-    @media (max-width: 650px) {
-      .card { padding: 1em;}
-      .patrollers-table th, .patrollers-table td { font-size:0.91em; padding: 0.2em 0.3em;}
-      .shift-row { flex-direction: column; align-items: stretch; gap:0.5em;}
-      .shift-label { min-width: 0; margin-right: 0; text-align: left;}
-      .remove-shift-btn { margin-left:0;}
-      .shift-controls {flex-wrap: wrap;}
+    
+    .patrollers-table th, 
+    .patrollers-table td {
+      border: 1px solid var(--border);
+      padding: 0.75rem;
+      text-align: left;
+      background: white;
+    }
+    
+    .patrollers-table th {
+      font-weight: 600;
+      color: #444;
+    }
+    
+    .patroller-checkbox {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .checkbox {
+      width: 1.2rem;
+      height: 1.2rem;
+      accent-color: var(--primary);
+    }
+    
+    .submit-btn {
+      width: 100%;
+      margin-top: 2rem;
+      padding: 1rem;
+      font-size: 1.1rem;
+    }
+    
+    .loading-spinner {
+      display: inline-block;
+      width: 1.5rem;
+      height: 1.5rem;
+      border: 3px solid rgba(25, 118, 210, 0.2);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .alert {
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      font-weight: 500;
+    }
+    
+    .alert-success {
+      background: rgba(76, 175, 80, 0.1);
+      color: #2e7d32;
+      border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+    
+    .alert-danger {
+      background: rgba(244, 67, 54, 0.1);
+      color: #c62828;
+      border: 1px solid rgba(244, 67, 54, 0.3);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: #666;
+    }
+    
+    @media (max-width: 768px) {
+      .card {
+        padding: 1.5rem;
+      }
+      
+      .shift-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+      }
+      
+      .shift-label {
+        min-width: auto;
+      }
+      
+      .patrollers-table th, 
+      .patrollers-table td {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
 <body>
-  <a href="index.html" style="display:block;text-align:center;margin-bottom:2em;">&larr; Back to Dashboard</a>
-  <h1 style="text-align:center;">Book a Shift</h1>
-  <section class="card" style="max-width:580px;margin:auto;">
-    <form id="booking-form" autocomplete="off">
-      <label class="form-label">Event Type:
-        <select name="eventType" required style="width:100%;padding:0.5em;">
-          <option value="">Select...</option>
-          <option>Visibility Patrols</option>
-          <option>Community Events</option>
-          <option>Meetings</option>
-          <option>Operations</option>
-        </select>
-      </label>
-      <label class="form-label">OB Number / Event Description:
-        <input name="obNumber" required style="width:100%;padding:0.5em;" />
-      </label>
-      <label class="form-label">Shift Date:
-        <input type="date" name="shiftDate" required style="width:100%;padding:0.5em;"/>
-      </label>
-      <div id="shifts-container"></div>
-      <button type="button" class="add-shift-btn" id="add-shift-btn">+ Add Another Shift Slot</button>
-      <label class="form-label" style="margin-bottom:0.4em;">Patrollers Attended:</label>
-      <div class="patrollers-table-container">
-        <table class="patrollers-table" id="patrollers-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Full Name & Surname</th>
-              <th>ID Card No</th>
-              <th style="text-align:center;">Attended</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td colspan="4" style="text-align:center;">Loading patroller list...</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <button type="submit" class="primary-btn">Book Shift</button>
-    </form>
-    <div id="booking-result" style="margin-top:1.2em;"></div>
-    <div style="font-size:0.95em;color:#444;margin-top:2em;">
+  <div class="container">
+    <a href="index.html" class="back-link">
+      <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+    
+    <h1>Book a Shift</h1>
+    
+    <div class="card">
+      <form id="booking-form" autocomplete="off" novalidate>
+        <div class="form-group">
+          <label for="eventType" class="form-label">Event Type:</label>
+          <select id="eventType" name="eventType" class="form-control" required>
+            <option value="">Select an event type...</option>
+            <option value="Visibility Patrols">Visibility Patrols</option>
+            <option value="Community Events">Community Events</option>
+            <option value="Meetings">Meetings</option>
+            <option value="Operations">Operations</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="obNumber" class="form-label">OB Number / Event Description:</label>
+          <input type="text" id="obNumber" name="obNumber" class="form-control" required 
+                 placeholder="Enter OB number or event description">
+        </div>
+        
+        <div class="form-group">
+          <label for="shiftDate" class="form-label">Shift Date:</label>
+          <input type="date" id="shiftDate" name="shiftDate" class="form-control" required>
+        </div>
+        
+        <div id="shifts-container"></div>
+        
+        <button type="button" class="btn btn-success add-shift-btn" id="add-shift-btn">
+          <i class="fas fa-plus"></i> Add Another Shift Slot
+        </button>
+        
+        <div class="patrollers-section">
+          <label class="form-label">Patrollers Attended:</label>
+          <div class="patrollers-table-container">
+            <table class="patrollers-table" id="patrollers-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Full Name & Surname</th>
+                  <th>ID Card No</th>
+                  <th style="text-align:center;">Attended</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="4" class="empty-state">
+                    <div class="loading-spinner"></div>
+                    <p>Loading patroller list...</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary submit-btn">
+          <i class="fas fa-calendar-check"></i> Book Shift
+        </button>
+        
+        <div id="booking-result"></div>
+      </form>
     </div>
-  </section>
+  </div>
+
   <script>
+    // Current shift index
     let shiftIndex = 0;
+    
+    // Add a new shift row to the form
     function addShiftRow(bookInVal = "", bookOutVal = "") {
       shiftIndex++;
       const container = document.getElementById("shifts-container");
+      const shiftNum = container.children.length + 1;
+      
       const row = document.createElement("div");
       row.className = "shift-row";
-      row.id = "shift-row-" + shiftIndex;
-      const shiftNum = Array.from(container.children).length + 1;
+      row.id = `shift-row-${shiftIndex}`;
+      
       row.innerHTML = `
-        <span class="shift-label">Shift ${shiftNum}:</span>
+        <span class="shift-label">Shift ${shiftNum}</span>
         <div class="shift-controls">
-          <label>
-            Book In:
-            <input type="time" name="bookIn" id="bookIn-${shiftIndex}" value="${bookInVal}" required />
-            <button type="button" class="tiny-btn" aria-label="Set Now" onclick="setNow('bookIn-${shiftIndex}')">&#128337;</button>
-          </label>
-          <label>
-            Book Out:
-            <input type="time" name="bookOut" id="bookOut-${shiftIndex}" value="${bookOutVal}" required />
-            <button type="button" class="tiny-btn" aria-label="Set Now" onclick="setNow('bookOut-${shiftIndex}')">&#128337;</button>
-          </label>
+          <div class="time-control">
+            <label for="bookIn-${shiftIndex}">Book In:</label>
+            <input type="time" id="bookIn-${shiftIndex}" name="bookIn" 
+                   class="time-input" value="${bookInVal}" required>
+            <button type="button" class="btn btn-icon btn-primary" 
+                    onclick="setNow('bookIn-${shiftIndex}')" aria-label="Set current time">
+              <i class="fas fa-clock"></i>
+            </button>
+          </div>
+          
+          <div class="time-control">
+            <label for="bookOut-${shiftIndex}">Book Out:</label>
+            <input type="time" id="bookOut-${shiftIndex}" name="bookOut" 
+                   class="time-input" value="${bookOutVal}" required>
+            <button type="button" class="btn btn-icon btn-primary" 
+                    onclick="setNow('bookOut-${shiftIndex}')" aria-label="Set current time">
+              <i class="fas fa-clock"></i>
+            </button>
+          </div>
+          
+          ${shiftNum > 1 ? `
+            <button type="button" class="btn btn-sm btn-danger" 
+                    onclick="removeShiftRow('shift-row-${shiftIndex}')">
+              <i class="fas fa-trash-alt"></i> Remove
+            </button>
+          ` : ''}
         </div>
-        ${shiftNum > 1 ? `<button type="button" class="remove-shift-btn" onclick="removeShiftRow('${row.id}')">✕</button>` : ''}
       `;
+      
       container.appendChild(row);
       updateShiftLabels();
     }
+    
+    // Remove a shift row
     function removeShiftRow(rowId) {
       const row = document.getElementById(rowId);
       if (row) row.remove();
       updateShiftLabels();
     }
+    
+    // Update shift numbers when rows are added/removed
     function updateShiftLabels() {
       const container = document.getElementById("shifts-container");
       Array.from(container.children).forEach((row, idx) => {
-        row.querySelector('.shift-label').textContent = `Shift ${idx + 1}:`;
-        const removeBtn = row.querySelector('.remove-shift-btn');
+        row.querySelector('.shift-label').textContent = `Shift ${idx + 1}`;
+        const removeBtn = row.querySelector('.btn-danger');
         if (removeBtn) {
-          removeBtn.style.display = container.children.length > 1 ? 'inline-block' : 'none';
+          removeBtn.style.display = container.children.length > 1 ? 'inline-flex' : 'none';
         }
       });
     }
-    window.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("shifts-container").innerHTML = "";
-      shiftIndex = 0;
-      addShiftRow();
-      loadPatrollersTable();
-    });
-    document.getElementById('add-shift-btn').onclick = addShiftRow;
+    
+    // Set time input to current time
     function setNow(fieldId) {
       const now = new Date();
       const hh = String(now.getHours()).padStart(2, '0');
       const mm = String(now.getMinutes()).padStart(2, '0');
       document.getElementById(fieldId).value = `${hh}:${mm}`;
     }
+    
+    // Parse CSV data into an array of objects
     function parseCSV(csv, delimiter = ",") {
-      const lines = csv.trim().split("\n").filter(line=>line);
+      const lines = csv.trim().split(/\r?\n/).filter(line => line.trim());
       if (lines.length < 2) return [];
+      
       const headers = lines[0].split(delimiter).map(h => h.trim());
+      
       return lines.slice(1).map(line => {
-        const cols = line.split(delimiter).map(c => c.trim());
-        return Object.fromEntries(headers.map((h, i) => [h, cols[i] || ""]));
+        const cols = line.split(new RegExp(`${delimiter}(?=(?:[^"]*"[^"]*")*[^"]*$)`));
+        return headers.reduce((obj, h, i) => {
+          obj[h] = (cols[i] || "").trim().replace(/^"|"$/g, '');
+          return obj;
+        }, {});
       });
     }
+    
+    // Load patrollers from CSV and populate the table
     async function loadPatrollersTable() {
       const table = document.getElementById("patrollers-table").getElementsByTagName("tbody")[0];
-      table.innerHTML = `<tr><td colspan="4" style="text-align:center;">Loading patroller list...</td></tr>`;
+      table.innerHTML = `
+        <tr>
+          <td colspan="4" class="empty-state">
+            <div class="loading-spinner"></div>
+            <p>Loading patroller list...</p>
+          </td>
+        </tr>
+      `;
+      
       try {
         const res = await fetch("patrollers.csv");
         if (!res.ok) {
-          table.innerHTML = `<tr><td colspan="4" style="text-align:center;">Could not load patroller data.</td></tr>`;
-          return;
+          throw new Error(`Failed to load patrollers: HTTP ${res.status}`);
         }
+        
         const csv = await res.text();
         const data = parseCSV(csv);
+        
         if (!data.length) {
-          table.innerHTML = `<tr><td colspan="4" style="text-align:center;">No patrollers found.</td></tr>`;
-          return;
+          throw new Error("No patrollers found in CSV file");
         }
-        const nameField = Object.keys(data[0]).find(f =>
-          f.toLowerCase().includes("full name")
+        
+        // Find relevant fields (case insensitive)
+        const nameField = Object.keys(data[0]).find(f => 
+          f.toLowerCase().includes("full name") || f.toLowerCase().includes("name")
         ) || Object.keys(data[0])[0];
-        const idField = Object.keys(data[0]).find(f =>
-          f.toLowerCase().includes("id card")
+        
+        const idField = Object.keys(data[0]).find(f => 
+          f.toLowerCase().includes("id card") || f.toLowerCase().includes("id")
         ) || Object.keys(data[0])[1];
-        table.innerHTML = data
-          .map(
-            (p, idx) =>
-              `<tr>
-                <td>${idx + 1}</td>
-                <td>${p[nameField]}</td>
-                <td>${p[idField]}</td>
-                <td class="patroller-checkbox">
-                  <input type="checkbox" name="patrollers" value="${p[nameField]} (${p[idField]})"/>
-                </td>
-              </tr>`
-          )
-          .join("");
+        
+        // Generate table rows
+        table.innerHTML = data.map((p, idx) => `
+          <tr>
+            <td>${idx + 1}</td>
+            <td>${p[nameField]}</td>
+            <td>${p[idField]}</td>
+            <td class="patroller-checkbox">
+              <input type="checkbox" class="checkbox" name="patrollers" 
+                     value="${p[nameField]} (${p[idField]})">
+            </td>
+          </tr>
+        `).join("");
+        
       } catch (err) {
-        table.innerHTML = `<tr><td colspan="4" style="text-align:center;">Error loading patrollers.</td></tr>`;
+        console.error("Error loading patrollers:", err);
+        table.innerHTML = `
+          <tr>
+            <td colspan="4" class="empty-state">
+              <div style="color: var(--danger); margin-bottom: 0.5rem;">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <p>${err.message}</p>
+              <button class="btn btn-ghost btn-sm" onclick="loadPatrollersTable()">
+                <i class="fas fa-sync-alt"></i> Try Again
+              </button>
+            </td>
+          </tr>
+        `;
       }
     }
-    document.getElementById("booking-form").onsubmit = async function (e) {
+    
+    // Initialize form when DOM is loaded
+    window.addEventListener("DOMContentLoaded", () => {
+      // Set default date to today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById("shiftDate").value = today;
+      
+      // Initialize shifts container
+      document.getElementById("shifts-container").innerHTML = "";
+      shiftIndex = 0;
+      addShiftRow();
+      
+      // Load patrollers
+      loadPatrollersTable();
+      
+      // Add event listener for add shift button
+      document.getElementById("add-shift-btn").addEventListener("click", addShiftRow);
+    });
+    
+    // Handle form submission
+    document.getElementById("booking-form").addEventListener("submit", async function(e) {
       e.preventDefault();
       const form = e.target;
-      const formData = new FormData(form);
-      const bookInList = formData.getAll("bookIn");
-      const bookOutList = formData.getAll("bookOut");
-      const shiftSlots = bookInList.map((inVal, idx) => ({
-        bookIn: inVal,
-        bookOut: bookOutList[idx] || ""
-      }));
-      const patrollers = formData.getAll("patrollers").join("; ");
-      let allOk = true, errors = [];
-      for (let idx = 0; idx < shiftSlots.length; idx++) {
-        const payload = new FormData();
-        payload.append("eventType", formData.get("eventType"));
-        payload.append("obNumber", formData.get("obNumber"));
-        payload.append("shiftDate", formData.get("shiftDate"));
-        payload.append("shiftNo", `Shift ${idx+1}`);
-        payload.append("bookIn", shiftSlots[idx].bookIn);
-        payload.append("bookOut", shiftSlots[idx].bookOut);
-        payload.append("patrollers", patrollers);
-        const resp = await fetch("https://laudiumcpf.co.za/save_shift_to_github.php", {
-          method: "POST",
-          body: payload
-        });
-        const text = await resp.text();
-        if (text.trim() !== "OK") {
-          allOk = false;
-          errors.push(`Shift ${idx+1}: ${text}`);
-        }
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const resultDiv = document.getElementById("booking-result");
+      
+      // Validate form
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
       }
-      if (allOk) {
-        document.getElementById("booking-result").innerHTML =
-          '<span style="color:green;font-weight:bold;">Shift booking(s) saved successfully!</span>';
+      
+      // Show loading state
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+      resultDiv.innerHTML = "";
+      
+      try {
+        // Prepare form data
+        const formData = new FormData(form);
+        const bookInList = formData.getAll("bookIn");
+        const bookOutList = formData.getAll("bookOut");
+        const patrollers = formData.getAll("patrollers").join("; ");
+        
+        // Prepare payload
+        const payload = {
+          eventType: formData.get("eventType"),
+          obNumber: formData.get("obNumber"),
+          shiftDate: formData.get("shiftDate"),
+          shifts: bookInList.map((inVal, idx) => ({
+            shiftNo: idx + 1,
+            bookIn: inVal,
+            bookOut: bookOutList[idx] || ""
+          })),
+          patrollers: patrollers,
+          timestamp: new Date().toISOString()
+        };
+        
+        // Submit to server
+        const response = await fetch("https://laudiumcpf.co.za/save_shift_to_github.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Server returned ${response.status} ${response.statusText}`);
+        }
+        
+        const result = await response.text();
+        if (result.trim() !== "OK") {
+          throw new Error(result || "Unknown server error");
+        }
+        
+        // Show success message
+        resultDiv.innerHTML = `
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i> 
+            Shift booking(s) saved successfully!
+          </div>
+        `;
+        
+        // Reset form (but keep one shift)
         form.reset();
         document.getElementById("shifts-container").innerHTML = "";
         shiftIndex = 0;
         addShiftRow();
-        loadPatrollersTable();
-      } else {
-        document.getElementById("booking-result").innerHTML =
-          `<span style="color:red;font-weight:bold;">Error saving shift(s):<br>${errors.join("<br>")}</span>`;
+        
+        // Set date back to today
+        document.getElementById("shiftDate").value = new Date().toISOString().split('T')[0];
+        
+      } catch (error) {
+        console.error("Submission error:", error);
+        resultDiv.innerHTML = `
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i> 
+            Error: ${error.message}
+          </div>
+        `;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-calendar-check"></i> Book Shift';
       }
-    };
+    });
   </script>
 </body>
 </html>
